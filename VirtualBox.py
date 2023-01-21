@@ -5,13 +5,29 @@ class VirtualBox():
     # [[y,-y],[x,-x],[z,-z]]
     valid_move = [[False, False], [False, False], [False, False]]
     last_move = [0, 0, 0, 0]
+    online_flag =True
 
     def __init__(self, maxx, maxy, maxz):
         self.MAX_POS = [maxx, maxy, maxz]
         self.__updateValid()
 
+    def reset(self):
+        self.last_move =  [0, 0, 0, 0]
+        self.online_flag = True
+        self.current_pos = [0,0,0,0]
+
+    def set_MAX_POS(self,val):
+        self.MAX_POS = val           
+
     def getCurrent(self):
         return self.current_pos
+
+    def set_online_flag(self,falg):
+        # on or off virtual box 
+        self.online_flag = falg
+        # when it change from False to true check if am i out of box so go back or reset
+        if  self.online_flag == True :
+            self.reset() 
 
     def addDegree(self,val):
         #degree must be between 0 and 360  from the north
