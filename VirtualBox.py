@@ -13,7 +13,6 @@ class VirtualBox():
 
     def reset(self):
         self.last_move =  [0, 0, 0, 0]
-        self.online_flag = True
         self.current_pos = [0,0,0,0]
 
     def set_MAX_POS(self,val):
@@ -27,6 +26,7 @@ class VirtualBox():
         self.online_flag = falg
         # when it change from False to true check if am i out of box so go back or reset
         if  self.online_flag == True :
+            # if its out of range max go back
             self.reset() 
 
     def addDegree(self,val):
