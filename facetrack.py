@@ -95,16 +95,21 @@ class FaceTracker ():
             # face found checked before  so distance zero now mean for sure the x axis is right
             # if object on the left
             if distanceX < -TOLERANCE_X:
-                right = - distanceX
+                # right = distanceX
+                right = - SPEED
             elif distanceX > TOLERANCE_X:
-                right = distanceX
+                # right = distanceX
+                right = SPEED
 
             # up dawn
             # if object is upper
             if distanceY < -TOLERANCE_Y:
-                up = distanceY
+                # up = - distanceY
+                up = SPEED
+
             elif distanceY > TOLERANCE_Y:
-                up = - distanceY
+                # up = - distanceY
+                up = - SPEED
 
             # back and forward
             # if  in range or nothing detected  ( 0 )  it will not go forward
@@ -145,7 +150,6 @@ if __name__ == '__main__':
         ret, frame = cap.read()
         frame, info = tracker.findface(frame)
         values = tracker.trackface(info)
-        # cv2.circle(frame, fpoint, 5, (0, 0,255), cv2.FILLED)
         cv2.imshow('Video', frame)
         sleep(0.3)
 
