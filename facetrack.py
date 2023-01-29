@@ -8,10 +8,13 @@ class FaceTracker ():
     on_flag = True
     drawonframe = True
     width, height = 640, 480  # change it to the best value to apply
-    main_frame_det = {"window_w": width, "window_h": height,
-                      # make sure center is integer tuple so //
-                      "center": (width//2, height//2),
-                      }
+    
+    window_w = width
+    window_h = height
+    # make sure center is integer tuple so //
+    center = (width//2, height//2)
+    window_area = window_w * window_h
+
     frame = None
     # findface
     # trackface
@@ -30,7 +33,7 @@ class FaceTracker ():
         myfacelistarea = []
         myfacelistdistance = []
 
-        distanceX, distanceY = 0, 0
+        gapX, gapY = 0, 0
 
         for (x, y, w, h) in faces:
             # cv2.rectangle(image, start_point, end_point, color, thickness)
@@ -47,15 +50,15 @@ class FaceTracker ():
                        5, (255, 255, 0), cv2.FILLED)  # center image point
 
             # left right , up and dawn
-            distanceX = face_centerx - self.main_frame_det['center'][0]
-            distanceY = face_centery - self.main_frame_det['center'][1]
+            gapX = face_centerx - self.main_frame_det['center'][0]
+            gapY = face_centery - self.main_frame_det['center'][1]
             # back and forward
             face_area = w * h
             # rotation
 
             myfacelistcenter.append([face_centerx, face_centery])
             myfacelistarea.append(face_area)
-            myfacelistdistance.append([distanceX, distanceY])
+            myfacelistdistance.append([gapX, gapY])
         # if drawing on then apply
         if self.drawonframe:
             self.frame = inframe
@@ -72,19 +75,20 @@ class FaceTracker ():
 
         fpoint = self.main_frame_det['center']
         # static vars
-        TOLERANCE_X, TOLERANCE_Y = 5, 5
+        # find the best value for it so it will not continusly shake
+        TOLERANCE_X, TOLERANCE_Y = 20, 20
         SLOWDOWN_THRESHOLD = 20
         SPEED = 10
 
         AreaValidRange = [6600, 6800]
-    
 
         # ---- fetch vars
-        distanceX, distanceY = info[2][0], info[2][1]
+        gapX, gapY = info[2][0], info[2][1]
         face_area = info[1]
         face_centerx, face_centery = info[0][0], info[0][1]
+        face_percent = face_area / self.window_area  # to help with forward upgrade
         print(
-            f"""distanceX : {distanceX}  distanceY : {distanceY}
+            f"""distanceX : {gapX}  distanceY : {gapY}
             \nface_area {face_area}\nface_center ({face_centerx},{face_centery})\n\n""")
 
         right, forward, up, yaw = 0, 0, 0, 0
@@ -94,20 +98,20 @@ class FaceTracker ():
             # left right track
             # face found checked before  so distance zero now mean for sure the x axis is right
             # if object on the left
-            if distanceX < -TOLERANCE_X:
+            if gapX < -TOLERANCE_X:
                 # right = distanceX
                 right = - SPEED
-            elif distanceX > TOLERANCE_X:
+            elif gapX > TOLERANCE_X:
                 # right = distanceX
                 right = SPEED
 
             # up dawn
             # if object is upper
-            if distanceY < -TOLERANCE_Y:
+            if gapY < -TOLERANCE_Y:
                 # up = - distanceY
                 up = SPEED
 
-            elif distanceY > TOLERANCE_Y:
+            elif gapY > TOLERANCE_Y:
                 # up = - distanceY
                 up = - SPEED
 
@@ -123,9 +127,9 @@ class FaceTracker ():
 
             # rotation track
             # yaw rotation is on the X axis
-            #find the good pid value
+            # find the good pid value
             pid = 0.3
-            yaw = pid * distanceX
+            yaw = pid * gapX
 
         up = min(SLOWDOWN_THRESHOLD, max(-SLOWDOWN_THRESHOLD, up))
         right = min(SLOWDOWN_THRESHOLD, max(-SLOWDOWN_THRESHOLD, right))
@@ -135,8 +139,8 @@ class FaceTracker ():
         # send command
         print(
             f"\nright :{right}, forward :{forward}, up:{up}, rotate:{yaw}\n")
-        return [right,forward,up,yaw]    
-        
+        # sendcommand(,blocking=False)
+        return [right, forward, up, yaw]
 
 
 if __name__ == '__main__':
