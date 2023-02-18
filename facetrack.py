@@ -8,7 +8,7 @@ class FaceTracker ():
     on_flag = True
     drawonframe = True
     width, height = 640, 480  # change it to the best value to apply
-    
+
     window_w = width
     window_h = height
     # make sure center is integer tuple so //
@@ -73,7 +73,7 @@ class FaceTracker ():
 
     def trackface(self, info):
 
-        fpoint = self.main_frame_det['center']
+        fpoint = self.center
         # static vars
         # find the best value for it so it will not continusly shake
         TOLERANCE_X, TOLERANCE_Y = 20, 20
@@ -148,8 +148,8 @@ if __name__ == '__main__':
     tracker = FaceTracker()
     # cam
     cap = cv2.VideoCapture(0)
-    cap.set(3, tracker.main_frame_det['window_w'])
-    cap.set(4, tracker.main_frame_det['window_h'])
+    cap.set(3, tracker.window_w)
+    cap.set(4, tracker.window_h)
     while True:
         ret, frame = cap.read()
         frame, info = tracker.findface(frame)

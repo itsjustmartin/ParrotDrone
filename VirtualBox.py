@@ -5,33 +5,33 @@ class VirtualBox():
     # [[y,-y],[x,-x],[z,-z]]
     valid_move = [[False, False], [False, False], [False, False]]
     last_move = [0, 0, 0, 0]
-    online_flag =True
+    online_flag = True
 
     def __init__(self, maxx, maxy, maxz):
         self.MAX_POS = [maxx, maxy, maxz]
         self.__updateValid()
 
     def reset(self):
-        self.last_move =  [0, 0, 0, 0]
-        self.current_pos = [0,0,0,0]
+        self.last_move = [0, 0, 0, 0]
+        self.current_pos = [0, 0, 0, 0]
 
-    def set_MAX_POS(self,val):
-        self.MAX_POS = val           
+    def set_MAX_POS(self, val):
+        self.MAX_POS = val
 
     def getCurrent(self):
         return self.current_pos
 
-    def set_online_flag(self,falg):
-        # on or off virtual box 
+    def set_online_flag(self, falg):
+        # on or off virtual box
         self.online_flag = falg
         # when it change from False to true check if am i out of box so go back or reset
-        if  self.online_flag == True :
+        if self.online_flag == True:
             # if its out of range max go back
-            self.reset() 
+            self.reset()
 
-    def addDegree(self,val):
-        #degree must be between 0 and 360  from the north
-        self.current_pos[3] = ((val + self.current_pos[3]) % 360)    
+    def addDegree(self, val):
+        # degree must be between 0 and 360  from the north
+        self.current_pos[3] = ((val + self.current_pos[3]) % 360)
 
     def __isValidmoveAt(self, pos, pos2):
         return self.valid_move[pos][pos2]
@@ -59,7 +59,7 @@ class VirtualBox():
             if self.last_move[i] >= 0 and not self.__isValidmoveAt(i, 0):
                 self.last_move[i] = 0
             if self.last_move[i] < 0 and not self.__isValidmoveAt(i, 1):
-                self.last_move[i] = 0        
+                self.last_move[i] = 0
 
         self.__makeMove(self.last_move)
 
@@ -69,7 +69,6 @@ class VirtualBox():
         self.addDegree(move[3])
         for i in range(3):
             self.current_pos[i] += move[i]
-
 
 
 if __name__ == '__main__':

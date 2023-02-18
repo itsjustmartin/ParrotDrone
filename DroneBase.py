@@ -94,8 +94,9 @@ class DroneManager(object):
                     response = self.response.decode('utf-8')
                 self.response = None
                 return response
-        else :
-            logger.warning({'action': 'send_command', 'command': command , 'status' : 'not_acquire'})
+        else:
+            logger.warning({'action': 'send_command',
+                           'command': command, 'status': 'not_acquire'})
 
     def takeoff(self):
         return self._send_command('takeoff')

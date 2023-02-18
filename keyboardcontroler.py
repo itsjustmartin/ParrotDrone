@@ -1,5 +1,5 @@
 import time
-from KB_Get_Module import KeyBoard 
+from KB_Get_Module import KeyBoard
 from time import sleep
 import cv2
 import numpy as np
@@ -9,16 +9,17 @@ class DroneControler():
     listener = KeyBoard()
     speed = 0
     angularspeed = 0  # 22.5 so when it doubles will be 45-degree  but i cant use float
-    def __init__(self,speed=10,angularspeed=22):
+
+    def __init__(self, speed=10, angularspeed=22):
         self.speed = speed
-        self.angularspeed = angularspeed 
+        self.angularspeed = angularspeed
         self.listener.init()
 
-    def setSpeed(self,val) :
+    def setSpeed(self, val):
         # Limit the value of speed between 0 and 30
-        self.speed=min(max(val, 0), 30)
+        self.speed = min(max(val, 0), 30)
 
-    def getSpeed(self): return self.speed    
+    def getSpeed(self): return self.speed
 
     def KeyPressCommand(self):
         lr, fb, ud, yv = 0, 0, 0, 0
@@ -55,7 +56,7 @@ class DroneControler():
             yv = self.angularspeed
 
         if self.listener.getkeyPressed("l"):
-            #drone land 
+            # drone land
             pass
         if self.listener.getkeyPressed("t"):
             # drone.takeoff()
@@ -66,34 +67,35 @@ class DroneControler():
             pass
 
         # capture image
-        if self.listener.getkeyPressed("c"):pass
+        if self.listener.getkeyPressed("c"):
+            pass
             # cv2.imwrite(f"Resources/Images/{time.time()}.jpg", img)
-            # time.sleep(0.3)  # so il will not take alot of pics
-        if self.listener.getkeyPressed("ESCAPE") :
+           # time.sleep(0.3)  # so il will not take alot of pics
+        if self.listener.getkeyPressed("ESCAPE"):
             self.listener.exit()
-            #drone land
+            # drone land
 
         return [lr, fb, ud, yv]
 
     def keyReleaseCommand(self):
-        #on release reset state speed
-         pass        
+        # on release reset state speed
+        pass
 
 
 if __name__ == '__main__':
 
     # print("power level : ", drone.get_battery(), " % 'controler' ")
     # # drone.takeoff()
-    contoler = DroneControler(10,22)
+    contoler = DroneControler(10, 22)
     while True:
         # moves
         contoler.listener.wait()
         values = contoler.KeyPressCommand()
-        print(contoler.speed,contoler.angularspeed)    
+        print(contoler.speed, contoler.angularspeed)
         if (values[0] == 0 and values[1] == 0 and values[2] == 0 and values[3] == 0):
-         print("---no command---")
-        else :
-         print(values)
+            print("---no command---")
+        else:
+            print(values)
         # camera
         # img = drone.get_frame_read().frame
         # img = cv2.resize(img, (360, 240))
